@@ -1,9 +1,3 @@
-if not game:IsLoaded() then
-	repeat
-		task.wait()
-	until game.Loaded
-end
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")

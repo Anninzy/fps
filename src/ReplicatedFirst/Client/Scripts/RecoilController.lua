@@ -1,9 +1,3 @@
-if not game:IsLoaded() then
-	repeat
-		task.wait()
-	until game.Loaded
-end
-
 local module = {}
 local RunService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
