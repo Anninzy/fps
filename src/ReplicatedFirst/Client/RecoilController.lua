@@ -13,6 +13,10 @@ local cameraAngleOffset = gunStats["RecoilCameraOffset"][1] --make it so that it
 local totalOffsetAppliedUp
 
 function module.StartRecoil()
+	if preRender then
+		preRender:Disconnect()
+	end
+
 	local alpha = 0
 	local increment = 0.05
 	totalOffsetAppliedUp = CFrame.Angles(0, 0, 0)

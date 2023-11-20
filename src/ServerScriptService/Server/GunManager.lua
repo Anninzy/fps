@@ -23,10 +23,10 @@ remotesFolder.FiringGun.OnServerEvent:Connect(function(player, mouseUnitRay)
 
 	gunRaycastParams.FilterDescendantsInstances = {character}
 
-	local gunRaycastResult = workspace:Raycast(character.Head.Position, mouseUnitRay.Direction * 1000, gunRaycastParams)
-	if gunRaycastResult then
-		print(gunRaycastResult.Instance)
-	end
+	-- local gunRaycastResult = workspace:Raycast(character.Head.Position, mouseUnitRay.Direction * 1000, gunRaycastParams)
+	-- if gunRaycastResult then
+	-- 	print(gunRaycastResult.Instance)
+	-- end
 	
 	gunFiredTime[player] = os.clock()
 end)
