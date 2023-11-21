@@ -26,7 +26,7 @@ return function()
 		_G[moduleScript.Name] = require(moduleScript)
 	end
 	
-	for _, moduleScript in ipairs(allModuleScripts) do
+	for _, moduleScript in pairs(_G) do
 		if type(moduleScript) ~= "table" then
 			continue
 		end
@@ -38,7 +38,7 @@ return function()
 		moduleScript.Initialize()
 	end
 
-	for _, moduleScript in ipairs(allModuleScripts) do
+	for _, moduleScript in pairs(_G) do
 		if type(moduleScript) ~= "table" then
 			continue
 		end
