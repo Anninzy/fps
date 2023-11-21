@@ -1,5 +1,6 @@
 local RunService = game:GetService("RunService")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local scriptPath = RunService:IsClient() and ReplicatedFirst.Client or ServerScriptService.Server
@@ -13,6 +14,10 @@ end
 return function()
 	local allModuleScripts = scriptPath:GetDescendants()
 	
+	for _, moduleScript in ipairs(ReplicatedStorage.Modules.Packages:GetChildren()) do
+		_G[moduleScript.Name] = require(moduleScript)
+	end
+
 	for _, moduleScript in ipairs(allModuleScripts) do
 		if not moduleScript:IsA("ModuleScript") then
 			continue

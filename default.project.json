@@ -4,13 +4,13 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
+      "$path": "src/ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
       "Modules": {
         "$className": "Folder",
-        "$path": "src/ReplicatedStorage/Modules"
-      },
-      "Remotes": {
-        "$className": "Folder",
-        "$path": "src/ReplicatedStorage/Remotes"
+        "Packages": {
+          "$path": "Packages"
+        }
       }
     },
     
