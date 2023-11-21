@@ -15,7 +15,7 @@ return function()
 	local allModuleScripts = scriptPath:GetDescendants()
 	
 	for _, moduleScript in ipairs(ReplicatedStorage.Modules.Packages:GetChildren()) do
-		_G[moduleScript.Name] = require(moduleScript)
+		table.insert(allModuleScripts, moduleScript)
 	end
 
 	for _, moduleScript in ipairs(allModuleScripts) do

@@ -13,24 +13,26 @@ function module.StartRecoil()
 
 	local framesRan = 0
 	local alpha = 0
-	local increment = 0.05
+	local increment = 0.15
 	totalOffsetAppliedUp = CFrame.Angles(0, 0, 0)
 
 	preRender = RunService.PreRender:Connect(function()
 		local actualIncrement
 		local typeOfMovement = framesRan % 3 --0: Upward cam movement, 1: No movement, 2: Halved downwards cam movement
+		framesRan += 1
+
 		if typeOfMovement == 1 then
 			return
 		elseif typeOfMovement == 2 then
 			actualIncrement = -increment / 2
+		else
+			actualIncrement = increment
 		end
 
 		alpha = math.clamp(alpha + actualIncrement, 0, 1)
 		local cameraCFrameNoOffset = camera.CFrame * totalOffsetAppliedUp:Inverse()
 		totalOffsetAppliedUp = CFrame.Angles(0, 0, 0):Lerp(cameraAngleOffset, alpha)
 		camera.CFrame = cameraCFrameNoOffset * totalOffsetAppliedUp
-
-		framesRan += 1
 	end)
 end
 

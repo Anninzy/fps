@@ -1,7 +1,6 @@
 local module = {}
 local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local isFiring = false
 
 local function handleFiringGun(_actionName, userInputState, inputObject)
