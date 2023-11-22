@@ -6,4 +6,5 @@ realm = "shared"
 
 [dependencies]
 react = "jsdotlua/react@17.0.2"
+reactRoblox = "jsdotlua/react-roblox@17.0.2"
 promise = "evaera/promise@4.0.0"
