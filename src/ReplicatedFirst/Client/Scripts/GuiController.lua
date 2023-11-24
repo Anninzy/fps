@@ -9,92 +9,123 @@ StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
 UserInputService.MouseIconEnabled = false
 
 function module.Initiate()
-	-- 	local react = _G.react
-	-- 	local reactRoblox = _G.reactRoblox
-
-	--     function hud()
-	--         return react.createElement("ScreenGui", {
-	-- 			IgnoreGuiInset = false,
-	-- 		}, {
-	-- 			Magazine = react.createElement("TextLabel", {
-	-- 				Size = UDim2.new(0.1, 0, 0.1, 0),
-	-- 				Text = "test",
-	-- 			}, {
-	-- 				Reserve = react.createElement("TextLabel", {
-	-- 					Anchor = UDim.new(1, 0),
-	-- 					Position = UDim2.new(1, 0, 0, 0),
-	-- 					Size = UDim2.new(0.1, 0, 0.1, 0),
-	-- 					Text = "test2",
-	-- 				}),
-	-- 			}),
-	-- 		})
-	-- 	end
-
-	--     local PlayerGui = Players.LocalPlayer.PlayerGui
-	--     local root = reactRoblox.createRoot(Instance.new("ScreenGui", PlayerGui))
-	--     root:render(reactRoblox.createPortal(hud, PlayerGui))
-
 	local React = _G.react
 	local ReactRoblox = _G.reactRoblox
-	local playerGui = Players.LocalPlayer.PlayerGui
 
-	-- local function App()
-	-- 	return React.createElement("ScreenGui", {
-	-- 		IgnoreGuiInset = false,
-	-- 		ResetOnSpawn = false,
-	-- 	}, {
-	-- 		Magazine = React.createElement("TextLabel", {
-	-- 			AnchorPoint = Vector2.new(1, 1),
-	-- 			Position = UDim2.new(0.9, 0, 1, 0),
-	-- 			Size = UDim2.new(0.08, 0, 0.08, 0),
-	-- 			TextXAlignment = Enum.TextXAlignment.Right,
-	-- 			BackgroundTransparency = 1,
-	-- 			TextColor3 = Color3.fromRGB(255, 255, 255),
-    --             TextScaled = true,
-	-- 			Text = "25",
-	-- 		}, {
-	-- 			Reserve = React.createElement("TextLabel", {
-	-- 				AnchorPoint = Vector2.new(0, 1),
-	-- 				Position = UDim2.new(1.1, 0, 1, 0),
-	-- 				Size = UDim2.new(1, 0, 0.75, 0),
-	-- 				TextXAlignment = Enum.TextXAlignment.Left,
-	-- 				BackgroundTransparency = 1,
-	-- 				TextColor3 = Color3.fromRGB(255, 255, 255),
-    --                 TextScaled = true,
-	-- 				Text = "50",
-	-- 			}, {
-    --                 UIStroke = React.createElement("UIStroke")
-    --             }),
-    --             UIStroke = React.createElement("UIStroke")
-	-- 		}),
-	-- 	})
-	-- end
+	local function createComponent(uiType, props, defaultProps)
+		for key, value in pairs(props) do
+			if key == "children" then
+				continue
+			end
 
-	-- local element = React.createElement(App)
+			defaultProps[key] = value
+		end
 
-	-- local root = ReactRoblox.createRoot(Instance.new("Folder"))
-	-- root:render(ReactRoblox.createPortal(element, playerGui))
+		return React.createElement(uiType, defaultProps, props.children)
+	end
 
-
-	local function Counter()
-		local count, setCount = React.useState(0)
-	
-		return React.createElement("Frame", {}, {
-			CurrentCount = React.createElement("TextLabel", {
-				Text = count,
-			}),
-			IncrementButton = React.createElement("TextButton", {
-				Text = "Increment",
-	
-				[React.Event.Activated] = function()
-					setCount(count + 1)
-				end
+	local function HUD()
+		local function crosshair(size, position)
+			return React.createElement("Frame", {
+				Size = size,
+				Position = position,
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+			}, {
+				React.createElement("UIStroke"),
 			})
+		end
+
+		local function TextLabel(props)
+			return createComponent("TextLabel", props, {
+				BackgroundTransparency = 1,
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextScaled = true,
+				Font = Enum.Font.JosefinSans,
+			})
+		end
+
+		local function ImageLabel(props)
+			return createComponent("ImageLabel", props, {
+				BackgroundTransparency = 1,
+				ScaleType = Enum.ScaleType.Fit,
+			})
+		end
+
+		return React.createElement("ScreenGui", {
+			IgnoreGuiInset = true,
+			ResetOnSpawn = false,
+		}, {
+			Health = React.createElement(TextLabel, {
+				AnchorPoint = Vector2.new(0.5, 1),
+				AutomaticSize = Enum.AutomaticSize.X,
+				Position = UDim2.new(0.35, 0, 1, 0),
+				Size = UDim2.new(0, 0, 0.08, 0),
+				Text = "100",
+			}, {
+				Shield = React.createElement(ImageLabel, {
+					AnchorPoint = Vector2.new(1, 0),
+					Size = UDim2.new(1, 0, 1, 0),
+					Image = "rbxassetid://15269254897",
+					ImageRectOffset = Vector2.new(0, 257),
+					ImageRectSize = Vector2.new(256, 256),
+				}, {
+					UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
+					ShieldHealth = React.createElement(TextLabel, {
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						Position = UDim2.new(0.5, 0, 0.5, 0),
+						Size = UDim2.new(0.5, 0, 0.5, 0),
+						Text = "50",
+					}),
+				}),
+			}),
+			Magazine = React.createElement(TextLabel, {
+				AnchorPoint = Vector2.new(0.5, 1),
+				Position = UDim2.new(0.65, 0, 1, 0),
+				Size = UDim2.new(1, 0, 0.08, 0),
+				Text = "25",
+			}, {
+				UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
+				AmmoIcon = React.createElement(ImageLabel, {
+					AnchorPoint = Vector2.new(0, 0.5),
+					Position = UDim2.new(1, 0, 0.5, 0),
+					Size = UDim2.new(1, 0, 0.5, 0),
+					Image = "http://www.roblox.com/asset/?id=6011908706",
+				}, {
+					UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
+					Reserve = React.createElement(TextLabel, {
+						Position = UDim2.new(1.2, 0, 0, 0),
+						Size = UDim2.new(1, 0, 1, 0),
+						Text = "50",
+						FontFace = Font.new(tostring(Enum.Font.JosefinSans), Enum.FontWeight.Light),
+					}),
+				}),
+			}),
+			Crosshair = React.createElement("Frame", {
+				Size = UDim2.new(1, 0, 1, 0),
+				BackgroundTransparency = 1,
+			}, {
+				Up = crosshair(UDim2.new(0, 2, 0, 8), UDim2.new(0.5, 0, 0.5, -8)),
+				Left = crosshair(UDim2.new(0, 8, 0, 2), UDim2.new(0.5, -8, 0.5, 0)),
+				Down = crosshair(UDim2.new(0, 2, 0, 8), UDim2.new(0.5, 0, 0.5, 8)),
+				Right = crosshair(UDim2.new(0, 8, 0, 2), UDim2.new(0.5, 8, 0.5, 0)),
+			}),
+			-- local count, setCount = React.useState(0)
+			-- CurrentCount = React.createElement("TextLabel", {
+			-- 	Text = count,
+			-- }),
+			-- IncrementButton = React.createElement("TextButton", {
+			-- 	Text = "Increment",
+
+			-- 	[React.Event.Activated] = function()
+			-- 		setCount(count + 1)
+			-- 	end
+			-- })
 		})
 	end
-	
+
 	local root = ReactRoblox.createRoot(Instance.new("Folder"))
-	root:render(ReactRoblox.createPortal(React.createElement(Counter), playerGui))
+	root:render(ReactRoblox.createPortal(React.createElement(HUD), Players.LocalPlayer.PlayerGui))
 end
 
 return module
