@@ -66,6 +66,7 @@ function module.Initiate()
 				Shield = React.createElement(ImageLabel, {
 					AnchorPoint = Vector2.new(1, 0),
 					Size = UDim2.new(1, 0, 1, 0),
+					Position = UDim2.new(0, 0, 0, -5),
 					Image = "rbxassetid://15269254897",
 					ImageRectOffset = Vector2.new(0, 257),
 					ImageRectSize = Vector2.new(256, 256),
@@ -73,7 +74,7 @@ function module.Initiate()
 					UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
 					ShieldHealth = React.createElement(TextLabel, {
 						AnchorPoint = Vector2.new(0.5, 0.5),
-						Position = UDim2.new(0.5, 0, 0.5, 0),
+						Position = UDim2.new(0.5, 1, 0.5, 2),
 						Size = UDim2.new(0.5, 0, 0.5, 0),
 						Text = "50",
 					}),
