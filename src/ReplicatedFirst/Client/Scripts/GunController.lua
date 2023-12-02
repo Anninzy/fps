@@ -1,6 +1,7 @@
 local module = {}
 local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
 local isFiring = false
 
 local function handleFiringGun(_actionName, userInputState, inputObject)
@@ -8,22 +9,30 @@ local function handleFiringGun(_actionName, userInputState, inputObject)
 		local recoilController = _G.RecoilController
 		local gunStats = require(ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]
 
-		local function sendMousePosition()
+		local function getMouseUnityRay()
 			local inputPosition = inputObject.Position
-			ReplicatedStorage.Remotes.FiringGun:FireServer(workspace.CurrentCamera:ScreenPointToRay(inputPosition.X, inputPosition.Y))
+			return workspace.CurrentCamera:ScreenPointToRay(inputPosition.X, inputPosition.Y)
 		end
-		
+
+		local function sendMousePosition()
+			local gunRaycastResult =
+				require(ReplicatedStorage.Modules.RaycastBullet).Raycast(Players.LocalPlayer, getMouseUnityRay())
+			_G.GuiController.CreateBulletHole(gunRaycastResult.Instance, gunRaycastResult.Position)
+			ReplicatedStorage.Remotes.FiringGun:FireServer(getMouseUnityRay())
+		end
+
 		sendMousePosition()
 		recoilController.StartRecoil()
-		
+
 		if gunStats["CanHoldFire"] then
 			isFiring = true
-			
-			repeat task.wait()
+
+			repeat
+				task.wait(gunStats["SecondsPerRound"])
 				sendMousePosition()
 			until not isFiring
 		end
-		
+
 		recoilController.EndRecoil()
 	elseif userInputState == Enum.UserInputState.End then
 		isFiring = false

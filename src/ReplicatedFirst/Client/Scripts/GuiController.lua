@@ -4,15 +4,16 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local remotesFolder = ReplicatedStorage.Remotes
+local localPlayer = Players.LocalPlayer
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
-
 UserInputService.MouseIconEnabled = false
 
 function module.Initiate()
 	local React = _G.react
 	local ReactRoblox = _G.reactRoblox
+	local playerGui = Players.LocalPlayer.PlayerGui
 
 	local function createComponent(uiType, props, defaultProps)
 		for key, value in pairs(props) do
@@ -24,6 +25,54 @@ function module.Initiate()
 		end
 
 		return React.createElement(uiType, defaultProps, props.children)
+	end
+
+	local function TextLabel(props)
+		return createComponent("TextLabel", props, {
+			BackgroundTransparency = 1,
+			TextColor3 = Color3.fromRGB(255, 255, 255),
+			TextScaled = true,
+			Font = Enum.Font.JosefinSans,
+		})
+	end
+
+	local function ImageLabel(props)
+		return createComponent("ImageLabel", props, {
+			BackgroundTransparency = 1,
+			ScaleType = Enum.ScaleType.Fit,
+		})
+	end
+
+	function module.CreateBulletHole(instance, position)
+		local function BulletHole()
+			local DECAL_SIZE = 1
+			local SCALE = 128
+			local SurfaceFace, Width, Height, RelativeX, RelativeY =
+				_G.WorldToGui:WorldPositionToGuiPosition(instance, position)
+
+			return React.createElement("SurfaceGui", {
+				CanvasSize = Vector2.new(SCALE * Width, SCALE * Height),
+				LightInfluence = 1,
+				Face = SurfaceFace,
+				Adornee = instance,
+			}, {
+				Clip = React.createElement("Frame", {
+					Size = UDim2.new(1, 0, 1, 0),
+					BackgroundTransparency = 1,
+					ClipsDescendants = true,
+				}, {
+					Hole = React.createElement(ImageLabel, {
+						Size = UDim2.new(0, SCALE * DECAL_SIZE, 0, SCALE * DECAL_SIZE),
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						Position = UDim2.new(RelativeX, 0, RelativeY, 0),
+						Image = "http://www.roblox.com/asset/?id=11543553259",
+					}),
+				}),
+			})
+		end
+
+		local surfaceGuiRoot = ReactRoblox.createRoot(Instance.new("Folder"))
+		surfaceGuiRoot:render(ReactRoblox.createPortal(React.createElement(BulletHole), playerGui))
 	end
 
 	local function HUD()
@@ -46,22 +95,6 @@ function module.Initiate()
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			}, {
 				React.createElement("UIStroke"),
-			})
-		end
-
-		local function TextLabel(props)
-			return createComponent("TextLabel", props, {
-				BackgroundTransparency = 1,
-				TextColor3 = Color3.fromRGB(255, 255, 255),
-				TextScaled = true,
-				Font = Enum.Font.JosefinSans,
-			})
-		end
-
-		local function ImageLabel(props)
-			return createComponent("ImageLabel", props, {
-				BackgroundTransparency = 1,
-				ScaleType = Enum.ScaleType.Fit,
 			})
 		end
 
@@ -138,7 +171,15 @@ function module.Initiate()
 	end
 
 	local root = ReactRoblox.createRoot(Instance.new("Folder"))
-	root:render(ReactRoblox.createPortal(React.createElement(HUD), Players.LocalPlayer.PlayerGui))
+	root:render(ReactRoblox.createPortal(React.createElement(HUD), playerGui))
+
+	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(player, instance, position)
+		if player == localPlayer then
+			return
+		end
+
+		module.CreateBulletHole(instance, position)
+	end)
 end
 
 return module
