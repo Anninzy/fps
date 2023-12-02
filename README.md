@@ -2,8 +2,8 @@
 
 **Descending priority**
 
-- [ ] Complete camera recoil
-- [ ] Switch to React for UIs
+- [x] Complete camera recoil
+- [x] Switch to React for UIs
 - [ ] Parallel Lua
 
 ---
