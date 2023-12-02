@@ -2,6 +2,8 @@ local module = {}
 local StarterGui = game:GetService("StarterGui")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local remotesFolder = ReplicatedStorage.Remotes
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
@@ -25,6 +27,17 @@ function module.Initiate()
 	end
 
 	local function HUD()
+		local health, setHealth = React.useState(100)
+		local shield, setShield = React.useState(50)
+
+		remotesFolder.HealthChanged.OnClientEvent:Connect(function(newHealth)
+			setHealth(newHealth)
+		end)
+
+		remotesFolder.ShieldChanged.OnClientEvent:Connect(function(newShield)
+			setShield(newShield)
+		end)
+
 		local function crosshair(size, position)
 			return React.createElement("Frame", {
 				Size = size,
@@ -58,15 +71,14 @@ function module.Initiate()
 		}, {
 			Health = React.createElement(TextLabel, {
 				AnchorPoint = Vector2.new(0.5, 1),
-				AutomaticSize = Enum.AutomaticSize.X,
 				Position = UDim2.new(0.35, 0, 1, 0),
-				Size = UDim2.new(0, 0, 0.08, 0),
-				Text = "100",
+				Size = UDim2.new(0.06, 0, 0.08, 0),
+				Text = health,
 			}, {
 				Shield = React.createElement(ImageLabel, {
-					AnchorPoint = Vector2.new(1, 0),
-					Size = UDim2.new(1, 0, 1, 0),
-					Position = UDim2.new(0, 0, 0, -5),
+					AnchorPoint = Vector2.new(1, 0.5),
+					Size = UDim2.new(0.5, 0, 1, 0),
+					Position = UDim2.new(0, 0, 0.5, -5),
 					Image = "rbxassetid://15269254897",
 					ImageRectOffset = Vector2.new(0, 257),
 					ImageRectSize = Vector2.new(256, 256),
@@ -76,7 +88,7 @@ function module.Initiate()
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.new(0.5, 1, 0.5, 2),
 						Size = UDim2.new(0.5, 0, 0.5, 0),
-						Text = "50",
+						Text = shield,
 					}),
 				}),
 			}),
