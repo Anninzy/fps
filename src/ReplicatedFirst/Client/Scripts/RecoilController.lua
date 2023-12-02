@@ -1,59 +1,58 @@
 local module = {}
 local RunService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
-local gunStats = require(game.ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]
+local sprayPattern = require(game.ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]["SprayPattern"]
 local preRender
-local cameraAngleOffset = gunStats["RecoilCameraOffset"][1] --make it so that it changes depending on the heat
-local totalOffsetAppliedUp
 
 function module.StartRecoil()
-	if preRender then
-		preRender:Disconnect()
-	end
-
-	local framesRan = 0
+	local sprayStageStartTime = os.clock()
+	local sprayPatternIndex = 1
+	local crosshairPosition = sprayPattern[sprayPatternIndex]
+	local offset = CFrame.Angles(0, 0, 0)
 	local alpha = 0
-	local increment = 0.15
-	totalOffsetAppliedUp = CFrame.Angles(0, 0, 0)
+	local increment = 0.1
+	local noOffsetCameraCFrame
+	local framesRan = 0
 
 	preRender = RunService.PreRender:Connect(function()
-		local actualIncrement
-		local typeOfMovement = framesRan % 3 --0: Upward cam movement, 1: No movement, 2: Halved downwards cam movement
-		framesRan += 1
+		if framesRan % 3 == 0 then
+			noOffsetCameraCFrame = camera.CFrame * offset:Inverse()
 
-		if typeOfMovement == 1 then
-			return
-		elseif typeOfMovement == 2 then
-			actualIncrement = -increment / 2
-		else
-			actualIncrement = increment
+			if os.clock() - sprayStageStartTime >= 2 then
+				if sprayPatternIndex + 1 > #sprayPattern then
+					sprayPatternIndex = 1
+				else
+					sprayPatternIndex += 1
+				end
+
+				if typeof(sprayPattern[sprayPatternIndex]) == "table" then
+					increment *= 2
+					sprayPattern = sprayPattern[sprayPatternIndex]
+					sprayPatternIndex = 1
+				end
+
+				crosshairPosition = sprayPattern[sprayPatternIndex]
+				noOffsetCameraCFrame = camera.CFrame
+				alpha = 0
+				sprayStageStartTime = os.clock()
+			end
+
+			alpha = math.clamp(alpha + increment, 0, 1)
+			offset = CFrame.Angles(0, 0, 0):Lerp(crosshairPosition, alpha)
+			camera.CFrame = noOffsetCameraCFrame * offset
+		elseif framesRan % 3 == 1 then
+			camera.CFrame *= CFrame.Angles(math.rad(-1), 0, 0)
+		elseif framesRan % 3 == 2 then
+			camera.CFrame *= CFrame.Angles(math.rad(1), 0, 0)
 		end
 
-		alpha = math.clamp(alpha + actualIncrement, 0, 1)
-		local cameraCFrameNoOffset = camera.CFrame * totalOffsetAppliedUp:Inverse()
-		totalOffsetAppliedUp = CFrame.Angles(0, 0, 0):Lerp(cameraAngleOffset, alpha)
-		camera.CFrame = cameraCFrameNoOffset * totalOffsetAppliedUp
+		framesRan += 1
 	end)
 end
 
 function module.EndRecoil()
 	preRender:Disconnect()
-	
-	local alpha = 0
-	local increment = 0.05
-	local totalOffsetAppliedDown = CFrame.Angles(0, 0, 0)
-	
-	preRender = RunService.PreRender:Connect(function()
-		alpha = math.clamp(alpha + increment, 0, 1)
-		local cameraCFrameNoOffset = camera.CFrame * totalOffsetAppliedDown:Inverse()
-		totalOffsetAppliedDown = CFrame.Angles(0, 0, 0):Lerp(totalOffsetAppliedUp:Inverse(), alpha)
-		camera.CFrame = cameraCFrameNoOffset * totalOffsetAppliedDown
-		
-		if alpha == 1 then
-			preRender:Disconnect()
-			return
-		end
-	end)
+	sprayPattern = require(game.ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]["SprayPattern"]
 end
 
 return module
