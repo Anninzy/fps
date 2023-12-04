@@ -1,9 +1,9 @@
 local module = {}
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local remotesFolder = ReplicatedStorage.Remotes
-local playersCurrentGun = {}
 local gunFiredTime = {}
+local playersCurrentGun = {}
 local GunsStats
 
 function module.Initiate()

@@ -1,21 +1,21 @@
 local module = {}
 local ContextActionService = game:GetService("ContextActionService")
-local UserInputService = game:GetService("UserInputService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 local remotesFolder = ReplicatedStorage.Remotes
 local isFiring = false
-local RecoilController
 local GuiController
 local GunsStats
 local RaycastBullet
+local RecoilController
 module.CurrentGun = "Vandal"
 
 function module.Initiate()
-	RecoilController = _G.RecoilController
 	GuiController = _G.GuiController
 	GunsStats = _G.GunsStats
 	RaycastBullet = _G.RaycastBullet
+	RecoilController = _G.RecoilController
 end
 
 local function raycastBullet()
