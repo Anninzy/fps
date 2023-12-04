@@ -2,20 +2,23 @@ local RunService = game:GetService("RunService")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local scriptPath
+local allModuleScripts
 
 if RunService:IsClient() then
-	scriptPath = ReplicatedFirst.Client
+	allModuleScripts = ReplicatedFirst.Client:GetDescendants()
 
 	if not game:IsLoaded() then
 		game.Loaded:Wait()
 	end
 else
-	scriptPath = ServerScriptService.Server
+	allModuleScripts = ServerScriptService.Server:GetDescendants()
+
+	for _, moduleScript in ipairs(ServerScriptService.ServerPackages:GetChildren()) do
+		table.insert(allModuleScripts, moduleScript)
+	end
 end
 
 return function()
-	local allModuleScripts = scriptPath:GetDescendants()
 	local modulesFolder = ReplicatedStorage.Modules
 
 	for _, moduleScript in ipairs(modulesFolder:GetChildren()) do

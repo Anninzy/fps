@@ -2,7 +2,6 @@
   "name": "UntitledFPS",
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
       "Modules": {
         "$path": "src/ReplicatedStorage/Modules",
@@ -14,18 +13,15 @@
         "$path": "src/ReplicatedStorage/Remotes"
       }
     },
-    
     "ReplicatedFirst": {
       "$path": "src/ReplicatedFirst"
     },
-
     "ServerScriptService": {
       "$path": "src/ServerScriptService",
       "ServerPackages": {
         "$path": "ServerPackages"
       }
     },
-
     "Workspace": {
       "$properties": {
         "FilteringEnabled": true,

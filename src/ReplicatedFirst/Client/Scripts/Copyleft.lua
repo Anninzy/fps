@@ -1,3 +1,9 @@
+local RunService = game:GetService("RunService")
+
+if RunService:IsStudio() then
+	return {}
+end
+
 print([[                                                       
 uuuuuu    uuuuuuwwwwwww           wwwww           wwwwwwwuuuuuu    uuuuuu  
 u::::u    u::::u w:::::w         w:::::w         w:::::w u::::u    u::::u  
