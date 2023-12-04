@@ -2,6 +2,7 @@
 
 - [ ] Gun muzzle
 - [ ] Bullet tracer
+- [ ] Wallbang
 - [ ] GunManager: Implement shield
 - [ ] RecoilController: Implement recoil for guns without spray
 - [ ] GunManager: Utilise parallel Lua
