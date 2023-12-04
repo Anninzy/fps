@@ -2,6 +2,8 @@ local module = {}
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local remotesFolder = ReplicatedStorage.Remotes
+local healthChangedEvent = remotesFolder.HealthChanged
+local shieldChangedEvent = remotesFolder.ShieldChanged
 local gunFiredTime = {}
 local playersCurrentGun = {}
 local GunsStats
@@ -34,6 +36,11 @@ end
 
 Players.PlayerAdded:Connect(function(player: Player)
 	playersCurrentGun[player] = "Vandal"
+
+	player.CharacterAdded:Connect(function()
+		healthChangedEvent:FireClient(player, 100)
+		shieldChangedEvent:FireClient(player, 0)
+	end)
 end)
 
 Players.PlayerRemoving:Connect(function(player: Player)
@@ -74,7 +81,7 @@ remotesFolder.BulletHitCharacter.OnServerEvent:Connect(function(playerWhoFired: 
 
 			for _, player in ipairs(Players:GetPlayers()) do
 				if character == player.Character then
-					remotesFolder.HealthChanged:FireClient(player, humanoid.Health)
+					healthChangedEvent:FireClient(player, math.round(humanoid.Health))
 					break
 				end
 			end
