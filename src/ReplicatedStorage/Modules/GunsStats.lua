@@ -1,6 +1,8 @@
--- SecondsPerRound should be set as 1 / (RPM / 60)
--- Insert a {} inside SprayPattern to keep looping the pattern inside it
--- Penetration: 1 = Low, 2 = Medium, 3 = High
+--[[
+	 SecondsPerRound: 1 / (RPM / 60)
+	 SprayPattern: {} = Loop pattern inside the table forever
+	 Penetration: 1 = Low, 2 = Medium, 3 = High
+]]
 
 return {
 	["Vandal"] = {
@@ -23,5 +25,8 @@ return {
 		["Zoom"] = 1.25,
 		["ADSFireRate"] = 0.9,
 		["ADSRunSpeed"] = 0.76,
+		["HeadDamage"] = 160,
+		["BodyDamage"] = 40,
+		["LegDamage"] = 34,
 	},
 }

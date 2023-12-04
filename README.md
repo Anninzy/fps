@@ -1,15 +1,11 @@
 # TODO
 
-- [ ] Add bullet hole to Debris
-- [ ] Look through the codes again and tidy things up
-- [ ] Parallel Lua
-- [x] Complete camera recoil
-- [x] Switch to React for UIs
-- [x] Revamp raycast (Bullet hole + hitscan)
-    - Do all the raycast on individual clients
-    - Communicate with server when:
-        - Bullet hits surface, ask server to sanity check and create bullet hole
-        - Bullet hits someone, ask server to sanity check and deal damage
+- [ ] React: Rewrite code
+- [ ] React: Add bullet hole to Debris
+    - Involves: ref
+- [ ] GunManager: Implement shield
+- [ ] RecoilController: Implement recoil for guns without spray
+- [ ] GunManager: Utilise parallel Lua
 
 ---
 

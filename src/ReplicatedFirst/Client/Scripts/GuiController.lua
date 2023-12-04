@@ -175,11 +175,7 @@ function module.Initiate()
 	local root = ReactRoblox.createRoot(Instance.new("Folder"))
 	root:render(ReactRoblox.createPortal(createElement(HUD), playerGui))
 
-	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(player, instance, position)
-		if player == localPlayer then
-			return
-		end
-
+	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(instance, position)
 		module.CreateBulletHole(instance, position)
 	end)
 end
