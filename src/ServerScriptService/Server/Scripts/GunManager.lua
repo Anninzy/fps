@@ -26,6 +26,10 @@ Players.PlayerAdded:Connect(function(player)
 	playersCurrentGun[player] = "Vandal"
 end)
 
+Players.PlayerRemoving:Connect(function(player)
+	playersCurrentGun[player] = nil
+end)
+
 remotesFolder.BulletHitSurface.OnServerEvent:Connect(function(playerWhoFired: Player, mouseUnitRayDirection: Vector3)
 	local raycastResult = raycastBullet(playerWhoFired, mouseUnitRayDirection)
 
