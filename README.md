@@ -1,8 +1,7 @@
 # TODO
 
-- [ ] React: Rewrite code
-- [ ] React: Add bullet hole to Debris
-    - Involves: ref
+- [ ] Gun muzzle
+- [ ] Bullet tracer
 - [ ] GunManager: Implement shield
 - [ ] RecoilController: Implement recoil for guns without spray
 - [ ] GunManager: Utilise parallel Lua

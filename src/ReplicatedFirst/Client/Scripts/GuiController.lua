@@ -167,7 +167,7 @@ function module.Initiate()
 		surfaceGuiRoot:render(createPortal(createElement(BulletHole), playerGui, "BulletHole"))
 
 		coroutine.wrap(function()
-			task.wait(2)
+			task.wait(5)
 			surfaceGuiRoot:unmount()
 		end)()
 	end
