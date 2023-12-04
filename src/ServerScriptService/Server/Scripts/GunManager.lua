@@ -36,6 +36,7 @@ end
 
 Players.PlayerAdded:Connect(function(player: Player)
 	playersCurrentGun[player] = "Vandal"
+	remotesFolder.ChangeGun:FireClient(player, "Vandal")
 
 	player.CharacterAdded:Connect(function()
 		healthChangedEvent:FireClient(player, 100)

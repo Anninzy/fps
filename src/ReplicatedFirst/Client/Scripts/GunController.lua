@@ -11,7 +11,11 @@ local GuiController
 local GunsStats
 local RaycastBullet
 local RecoilController
-module.CurrentGun = "Vandal"
+module.CurrentGun = ""
+
+remotesFolder.ChangeGun.OnClientEvent:Connect(function(gunName: string)
+	module.CurrentGun = gunName
+end)
 
 function module.Initiate()
 	GuiController = _G.GuiController
