@@ -7,6 +7,14 @@
 - [ ] RecoilController: Implement recoil for guns without spray
 - [ ] GunManager: Utilise parallel Lua
 
+# BUILD
+
+```bash
+aftman install
+wally install
+rojo build -o "{project_name}.rbxlx"
+```
+
 ---
 
 Built with partially managed Rojo
