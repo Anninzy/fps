@@ -1,10 +1,9 @@
 local module = {}
-local Debris = game:GetService("Debris")
+-- local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 local UserInputService = game:GetService("UserInputService")
-local localPlayer = Players.LocalPlayer
 local remotesFolder = ReplicatedStorage.Remotes
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
@@ -13,8 +12,11 @@ UserInputService.MouseIconEnabled = false
 
 function module.Initiate()
 	local React = _G.React
-	local ReactRoblox = _G.ReactRoblox
 	local createElement = React.createElement
+	local useState = React.useState
+	local ReactRoblox = _G.ReactRoblox
+	local createPortal = ReactRoblox.createPortal
+	local createRoot = ReactRoblox.createRoot
 	local playerGui = Players.LocalPlayer.PlayerGui
 
 	local function createComponent(uiType, props, defaultProps)
@@ -45,41 +47,9 @@ function module.Initiate()
 		})
 	end
 
-	function module.CreateBulletHole(instance, position)
-		local function BulletHole()
-			local DECAL_SIZE = 1
-			local SCALE = 128
-			local SurfaceFace, Width, Height, RelativeX, RelativeY =
-				_G.WorldToGui:WorldPositionToGuiPosition(instance, position)
-
-			return createElement("SurfaceGui", {
-				CanvasSize = Vector2.new(SCALE * Width, SCALE * Height),
-				LightInfluence = 1,
-				Face = SurfaceFace,
-				Adornee = instance,
-			}, {
-				Clip = createElement("Frame", {
-					Size = UDim2.new(1, 0, 1, 0),
-					BackgroundTransparency = 1,
-					ClipsDescendants = true,
-				}, {
-					Hole = createElement(ImageLabel, {
-						Size = UDim2.new(0, SCALE * DECAL_SIZE, 0, SCALE * DECAL_SIZE),
-						AnchorPoint = Vector2.new(0.5, 0.5),
-						Position = UDim2.new(RelativeX, 0, RelativeY, 0),
-						Image = "http://www.roblox.com/asset/?id=11543553259",
-					}),
-				}),
-			})
-		end
-
-		local surfaceGuiRoot = ReactRoblox.createRoot(Instance.new("Folder"))
-		surfaceGuiRoot:render(ReactRoblox.createPortal(createElement(BulletHole), playerGui))
-	end
-
 	local function HUD()
-		local health, setHealth = React.useState(100)
-		local shield, setShield = React.useState(50)
+		local health, setHealth = useState(100)
+		local shield, setShield = useState(50)
 
 		remotesFolder.HealthChanged.OnClientEvent:Connect(function(newHealth)
 			setHealth(newHealth)
@@ -158,22 +128,43 @@ function module.Initiate()
 				Down = crosshair(UDim2.new(0, 2, 0, 8), UDim2.new(0.5, 0, 0.5, 8)),
 				Right = crosshair(UDim2.new(0, 8, 0, 2), UDim2.new(0.5, 8, 0.5, 0)),
 			}),
-			-- local count, setCount = React.useState(0)
-			-- CurrentCount = createElement("TextLabel", {
-			-- 	Text = count,
-			-- }),
-			-- IncrementButton = createElement("TextButton", {
-			-- 	Text = "Increment",
-
-			-- 	[React.Event.Activated] = function()
-			-- 		setCount(count + 1)
-			-- 	end
-			-- })
 		})
 	end
 
-	local root = ReactRoblox.createRoot(Instance.new("Folder"))
-	root:render(ReactRoblox.createPortal(createElement(HUD), playerGui))
+	local root = createRoot(Instance.new("Folder"))
+	root:render(createPortal(createElement(HUD), playerGui))
+
+	function module.CreateBulletHole(instance, position)
+		local DECAL_SIZE = 1
+		local SCALE = 128
+		local SurfaceFace, Width, Height, RelativeX, RelativeY =
+			_G.WorldToGui:WorldPositionToGuiPosition(instance, position)
+
+		local function BulletHole()
+			return createElement("SurfaceGui", {
+				CanvasSize = Vector2.new(SCALE * Width, SCALE * Height),
+				LightInfluence = 1,
+				Face = SurfaceFace,
+				Adornee = instance,
+			}, {
+				Clip = createElement("Frame", {
+					Size = UDim2.new(1, 0, 1, 0),
+					BackgroundTransparency = 1,
+					ClipsDescendants = true,
+				}, {
+					Hole = createElement(ImageLabel, {
+						Size = UDim2.new(0, SCALE * DECAL_SIZE, 0, SCALE * DECAL_SIZE),
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						Position = UDim2.new(RelativeX, 0, RelativeY, 0),
+						Image = "http://www.roblox.com/asset/?id=11543553259",
+					}),
+				}),
+			})
+		end
+
+		local surfaceGuiRoot = createRoot(Instance.new("Folder"))
+		surfaceGuiRoot:render(createPortal(createElement(BulletHole), playerGui))
+	end
 
 	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(instance, position)
 		module.CreateBulletHole(instance, position)
