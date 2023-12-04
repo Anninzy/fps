@@ -132,7 +132,7 @@ function module.Initiate()
 	end
 
 	local root = createRoot(Instance.new("Folder"))
-	root:render(createPortal(createElement(HUD), playerGui))
+	root:render(createPortal(createElement(HUD), playerGui, "HUD"))
 
 	function module.CreateBulletHole(instance, position)
 		local DECAL_SIZE = 1
@@ -157,13 +157,19 @@ function module.Initiate()
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.new(RelativeX, 0, RelativeY, 0),
 						Image = "http://www.roblox.com/asset/?id=11543553259",
+						ImageTransparency = 0.25,
 					}),
 				}),
 			})
 		end
 
 		local surfaceGuiRoot = createRoot(Instance.new("Folder"))
-		surfaceGuiRoot:render(createPortal(createElement(BulletHole), playerGui))
+		surfaceGuiRoot:render(createPortal(createElement(BulletHole), playerGui, "BulletHole"))
+
+		coroutine.wrap(function()
+			task.wait(2)
+			surfaceGuiRoot:unmount()
+		end)()
 	end
 
 	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(instance, position)
