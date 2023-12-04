@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
+
 PhysicsService:RegisterCollisionGroup("Players")
 PhysicsService:CollisionGroupSetCollidable("Players", "Players", false)
 

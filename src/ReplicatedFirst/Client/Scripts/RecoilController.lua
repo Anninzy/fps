@@ -1,12 +1,12 @@
 local module = {}
 local RunService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
-local sprayPattern = require(game.ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]["SprayPattern"]
 local preRender
 
 function module.StartRecoil()
 	local sprayStageStartTime = os.clock()
 	local sprayPatternIndex = 1
+	local sprayPattern = _G.GunsStats[_G.GunController.CurrentGun]["SprayPattern"]
 	local crosshairPosition = sprayPattern[sprayPatternIndex]
 	local offset = CFrame.Angles(0, 0, 0)
 	local alpha = 0
@@ -52,7 +52,8 @@ end
 
 function module.EndRecoil()
 	preRender:Disconnect()
-	sprayPattern = require(game.ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]["SprayPattern"]
 end
+
+function module.Recoil() end
 
 return module

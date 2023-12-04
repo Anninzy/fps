@@ -1,14 +1,9 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local remotesFolder = ReplicatedStorage.Remotes
-
 local gunFiredTime = {}
 
-remotesFolder.FiringGun.OnServerEvent:Connect(function(player, mouseUnitRay)
-	if not mouseUnitRay then
-		return
-	end
-
-	local gunStats = require(ReplicatedStorage.Modules.GunsStats)["UnnamedGun"]
+local function raycastBullet(player, mouseUnitRayDirection)
+	local gunStats = _G.GunStats["Vandal"]
 
 	if gunFiredTime[player] then
 		if os.clock() - gunFiredTime[player] < gunStats["SecondsPerRound"] then
@@ -16,12 +11,16 @@ remotesFolder.FiringGun.OnServerEvent:Connect(function(player, mouseUnitRay)
 		end
 	end
 
-	local gunRaycastResult = require(ReplicatedStorage.Modules.RaycastBullet).Raycast(player, mouseUnitRay)
-	if gunRaycastResult then
-		remotesFolder.CreateBulletHole:FireAllClients(player, gunRaycastResult.Instance, gunRaycastResult.Position)
-	end
-
 	gunFiredTime[player] = os.clock()
+
+	return _G.RaycastBullet(player, mouseUnitRayDirection)
+end
+
+remotesFolder.BulletHitSurface.OnServerEvent:Connect(function(player, mouseUnitRayDirection)
+	local raycastResult = raycastBullet(player, mouseUnitRayDirection)
+	if raycastResult then
+		remotesFolder.CreateBulletHole:FireAllClients(player, raycastResult.Instance, raycastResult.Position)
+	end
 end)
 
 return {}

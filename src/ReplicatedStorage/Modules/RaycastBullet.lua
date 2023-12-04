@@ -1,13 +1,8 @@
-local module = {}
-local gunRaycastParams = RaycastParams.new()
-gunRaycastParams.FilterType = Enum.RaycastFilterType.Exclude
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
 
-function module.Raycast(player, mouseUnitRay)
+return function(player, direction)
 	local character = player.Character
-
-	gunRaycastParams.FilterDescendantsInstances = { character }
-
-	return workspace:Raycast(character.Head.Position, mouseUnitRay.Direction * 1000, gunRaycastParams)
+	raycastParams.FilterDescendantsInstances = { character }
+	return workspace:Raycast(character.Head.Position, direction * 1000, raycastParams)
 end
-
-return module

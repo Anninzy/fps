@@ -3,6 +3,7 @@ local StarterGui = game:GetService("StarterGui")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Debris = game:GetService("Debris")
 local remotesFolder = ReplicatedStorage.Remotes
 local localPlayer = Players.LocalPlayer
 
@@ -13,6 +14,7 @@ UserInputService.MouseIconEnabled = false
 function module.Initiate()
 	local React = _G.react
 	local ReactRoblox = _G.reactRoblox
+	local createElement = React.createElement
 	local playerGui = Players.LocalPlayer.PlayerGui
 
 	local function createComponent(uiType, props, defaultProps)
@@ -24,7 +26,7 @@ function module.Initiate()
 			defaultProps[key] = value
 		end
 
-		return React.createElement(uiType, defaultProps, props.children)
+		return createElement(uiType, defaultProps, props.children)
 	end
 
 	local function TextLabel(props)
@@ -50,18 +52,18 @@ function module.Initiate()
 			local SurfaceFace, Width, Height, RelativeX, RelativeY =
 				_G.WorldToGui:WorldPositionToGuiPosition(instance, position)
 
-			return React.createElement("SurfaceGui", {
+			return createElement("SurfaceGui", {
 				CanvasSize = Vector2.new(SCALE * Width, SCALE * Height),
 				LightInfluence = 1,
 				Face = SurfaceFace,
 				Adornee = instance,
 			}, {
-				Clip = React.createElement("Frame", {
+				Clip = createElement("Frame", {
 					Size = UDim2.new(1, 0, 1, 0),
 					BackgroundTransparency = 1,
 					ClipsDescendants = true,
 				}, {
-					Hole = React.createElement(ImageLabel, {
+					Hole = createElement(ImageLabel, {
 						Size = UDim2.new(0, SCALE * DECAL_SIZE, 0, SCALE * DECAL_SIZE),
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.new(RelativeX, 0, RelativeY, 0),
@@ -72,7 +74,7 @@ function module.Initiate()
 		end
 
 		local surfaceGuiRoot = ReactRoblox.createRoot(Instance.new("Folder"))
-		surfaceGuiRoot:render(ReactRoblox.createPortal(React.createElement(BulletHole), playerGui))
+		surfaceGuiRoot:render(ReactRoblox.createPortal(createElement(BulletHole), playerGui))
 	end
 
 	local function HUD()
@@ -88,27 +90,27 @@ function module.Initiate()
 		end)
 
 		local function crosshair(size, position)
-			return React.createElement("Frame", {
+			return createElement("Frame", {
 				Size = size,
 				Position = position,
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			}, {
-				React.createElement("UIStroke"),
+				createElement("UIStroke"),
 			})
 		end
 
-		return React.createElement("ScreenGui", {
+		return createElement("ScreenGui", {
 			IgnoreGuiInset = true,
 			ResetOnSpawn = false,
 		}, {
-			Health = React.createElement(TextLabel, {
+			Health = createElement(TextLabel, {
 				AnchorPoint = Vector2.new(0.5, 1),
 				Position = UDim2.new(0.35, 0, 1, 0),
 				Size = UDim2.new(0.06, 0, 0.08, 0),
 				Text = health,
 			}, {
-				Shield = React.createElement(ImageLabel, {
+				Shield = createElement(ImageLabel, {
 					AnchorPoint = Vector2.new(1, 0.5),
 					Size = UDim2.new(0.5, 0, 1, 0),
 					Position = UDim2.new(0, 0, 0.5, -5),
@@ -116,8 +118,8 @@ function module.Initiate()
 					ImageRectOffset = Vector2.new(0, 257),
 					ImageRectSize = Vector2.new(256, 256),
 				}, {
-					UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
-					ShieldHealth = React.createElement(TextLabel, {
+					UIAspectRatioConstraint = createElement("UIAspectRatioConstraint"),
+					ShieldHealth = createElement(TextLabel, {
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.new(0.5, 1, 0.5, 2),
 						Size = UDim2.new(0.5, 0, 0.5, 0),
@@ -125,21 +127,21 @@ function module.Initiate()
 					}),
 				}),
 			}),
-			Magazine = React.createElement(TextLabel, {
+			Magazine = createElement(TextLabel, {
 				AnchorPoint = Vector2.new(0.5, 1),
 				Position = UDim2.new(0.65, 0, 1, 0),
 				Size = UDim2.new(1, 0, 0.08, 0),
 				Text = "25",
 			}, {
-				UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
-				AmmoIcon = React.createElement(ImageLabel, {
+				UIAspectRatioConstraint = createElement("UIAspectRatioConstraint"),
+				AmmoIcon = createElement(ImageLabel, {
 					AnchorPoint = Vector2.new(0, 0.5),
 					Position = UDim2.new(1, 0, 0.5, 0),
 					Size = UDim2.new(1, 0, 0.5, 0),
 					Image = "http://www.roblox.com/asset/?id=6011908706",
 				}, {
-					UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
-					Reserve = React.createElement(TextLabel, {
+					UIAspectRatioConstraint = createElement("UIAspectRatioConstraint"),
+					Reserve = createElement(TextLabel, {
 						Position = UDim2.new(1.2, 0, 0, 0),
 						Size = UDim2.new(1, 0, 1, 0),
 						Text = "50",
@@ -147,7 +149,7 @@ function module.Initiate()
 					}),
 				}),
 			}),
-			Crosshair = React.createElement("Frame", {
+			Crosshair = createElement("Frame", {
 				Size = UDim2.new(1, 0, 1, 0),
 				BackgroundTransparency = 1,
 			}, {
@@ -157,10 +159,10 @@ function module.Initiate()
 				Right = crosshair(UDim2.new(0, 8, 0, 2), UDim2.new(0.5, 8, 0.5, 0)),
 			}),
 			-- local count, setCount = React.useState(0)
-			-- CurrentCount = React.createElement("TextLabel", {
+			-- CurrentCount = createElement("TextLabel", {
 			-- 	Text = count,
 			-- }),
-			-- IncrementButton = React.createElement("TextButton", {
+			-- IncrementButton = createElement("TextButton", {
 			-- 	Text = "Increment",
 
 			-- 	[React.Event.Activated] = function()
@@ -171,7 +173,7 @@ function module.Initiate()
 	end
 
 	local root = ReactRoblox.createRoot(Instance.new("Folder"))
-	root:render(ReactRoblox.createPortal(React.createElement(HUD), playerGui))
+	root:render(ReactRoblox.createPortal(createElement(HUD), playerGui))
 
 	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(player, instance, position)
 		if player == localPlayer then
