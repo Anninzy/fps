@@ -15,6 +15,9 @@ wally install
 rojo build -o "{project_name}.rbxlx"
 ```
 
+# NOTES
+This repo does not contain the place file, so errors are expected due to missing models.
+
 ---
 
 Built with partially managed Rojo
