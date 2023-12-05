@@ -25,10 +25,11 @@ function module.Initiate()
 end
 
 local function raycastBullet()
+	local character = localPlayer.Character
 	local mouseLocation = UserInputService:GetMouseLocation()
 	local mouseUnitRayDirection = workspace.CurrentCamera:ViewportPointToRay(mouseLocation.X, mouseLocation.Y).Direction
 	local spread = Vector3.new(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100))
-	local velocity = localPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity
+	local velocity = character.HumanoidRootPart.AssemblyLinearVelocity
 	velocity = Vector3.new(math.round(velocity.X), math.round(velocity.Y), math.round(velocity.Z))
 
 	if velocity == Vector3.new(0, 0, 0) then
@@ -40,7 +41,7 @@ local function raycastBullet()
 		end
 	end
 
-	local raycastResult = RaycastBullet(localPlayer, mouseUnitRayDirection, spread)
+	local raycastResult = RaycastBullet(character, character.Head.Position, mouseUnitRayDirection, spread)
 
 	if raycastResult then
 		local instance = raycastResult.Instance
