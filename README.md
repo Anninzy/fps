@@ -1,8 +1,10 @@
 # TODO
 
+- [ ] Gotta do some more clean up on codes, organise them into folders as well
+    - [ ] Prevent duplicate function / variable / module name, e.g. RaycastBullet
+- [ ] Wallbang
 - [ ] Gun muzzle
 - [ ] Bullet tracer
-- [ ] Wallbang
 - [ ] GunManager: Implement shield
 - [ ] RecoilController: Implement recoil for guns without spray
 - [ ] GunManager: Utilise parallel Lua
