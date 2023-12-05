@@ -2,12 +2,12 @@ local module = {}
 local RunService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
 local preRender
-local GunController
-local GunsStats
+local WeaponController
+local WeaponStatsService
 
 function module.Initiate()
-	GunController = _G.GunController
-	GunsStats = _G.GunsStats
+	WeaponController = _G.WeaponController
+	WeaponStatsService = _G.WeaponStatsService
 end
 
 function module.StartRecoil()
@@ -15,7 +15,7 @@ function module.StartRecoil()
 	local framesRan = 0
 	local increment = 0.1
 	local offset = CFrame.Angles(0, 0, 0)
-	local sprayPattern = GunsStats[GunController.CurrentGun]["SprayPattern"]
+	local sprayPattern = WeaponStatsService[WeaponController.CurrentWeapon]["SprayPattern"]
 	local sprayPatternIndex = 1
 	local sprayStageStartTime = os.clock()
 	local crosshairPosition = sprayPattern[sprayPatternIndex]
@@ -38,9 +38,9 @@ function module.StartRecoil()
 					sprayPatternIndex = 1
 				end
 
+				alpha = 0
 				crosshairPosition = sprayPattern[sprayPatternIndex]
 				noOffsetCameraCFrame = camera.CFrame
-				alpha = 0
 				sprayStageStartTime = os.clock()
 			end
 

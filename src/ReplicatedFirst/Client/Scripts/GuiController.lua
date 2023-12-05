@@ -1,5 +1,4 @@
 local module = {}
--- local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
@@ -12,9 +11,9 @@ UserInputService.MouseIconEnabled = false
 
 function module.Initiate()
 	local React = _G.React
+	local ReactRoblox = _G.ReactRoblox
 	local createElement = React.createElement
 	local useState = React.useState
-	local ReactRoblox = _G.ReactRoblox
 	local createPortal = ReactRoblox.createPortal
 	local createRoot = ReactRoblox.createRoot
 	local playerGui = Players.LocalPlayer.PlayerGui
@@ -49,7 +48,7 @@ function module.Initiate()
 
 	local function HUD()
 		local health, setHealth = useState(100)
-		local shield, setShield = useState(50)
+		local shield, setShield = useState(0)
 
 		remotesFolder.HealthChanged.OnClientEvent:Connect(function(newHealth)
 			setHealth(newHealth)
@@ -140,7 +139,7 @@ function module.Initiate()
 		local SurfaceFace, Width, Height, RelativeX, RelativeY =
 			_G.WorldToGui:WorldPositionToGuiPosition(instance, position)
 
-		local function BulletHole()
+		local function BulletHoleGui()
 			return createElement("SurfaceGui", {
 				CanvasSize = Vector2.new(SCALE * Width, SCALE * Height),
 				LightInfluence = 1,
@@ -164,7 +163,7 @@ function module.Initiate()
 		end
 
 		local surfaceGuiRoot = createRoot(Instance.new("Folder"))
-		surfaceGuiRoot:render(createPortal(createElement(BulletHole), playerGui, "BulletHole"))
+		surfaceGuiRoot:render(createPortal(createElement(BulletHoleGui), playerGui, "BulletHole"))
 
 		coroutine.wrap(function()
 			task.wait(5)

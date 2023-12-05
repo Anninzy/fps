@@ -1,16 +1,12 @@
 # TODO
 
-- [ ] Gotta do some more clean up on codes, organise them into folders as well
-    - [ ] Prevent duplicate function / variable / module name, e.g. RaycastBullet
-    - [ ] Rename things accordingly, might not be accurate to the definition of the terms, but makes a good enough distinction
-        - Client: Controller
-        - Server: Manager
-        - Shared: Service
-- [ ] Wallbang
-- [ ] Gun muzzle
-- [ ] Bullet tracer
-- [ ] GunManager: Implement shield
+- [ ] Clean up some code (i.e WeaponManager, BulletController)
+	- [ ] Prevent duplicate function / variable / module name, e.g. RaycastBullet
 - [ ] RecoilController: Implement recoil for guns without spray
+- [ ] BulletController: Wallbang
+- [ ] WeaponManager: Gun muzzle
+- [ ] WeaponManager: Bullet tracer
+- [ ] GunManager: Implement shield
 - [ ] GunManager: Utilise parallel Lua
 - [ ] Set repo to public after getting the project to a playable state
 
@@ -27,4 +23,4 @@ This repo does not contain the place file, so errors are expected due to missing
 
 ---
 
-Built with partially managed Rojo
+uwu

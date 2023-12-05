@@ -39,42 +39,41 @@ local function raycastDamage(playerWhoFired: Player, mouseUnitRayDirection: Vect
 	local character = playerWhoFired.Character
 	local raycastResult = raycastBullet(playerWhoFired, mouseUnitRayDirection, spread)
 
-		if raycastResult then
-			local instance = raycastResult.Instance
-			local character = instance.Parent
-			local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if raycastResult then
+		local instance = raycastResult.Instance
+		local character = instance.Parent
+		local humanoid = character:FindFirstChildWhichIsA("Humanoid")
 
-			if humanoid then
-				local instanceName = instance.Name
+		if humanoid then
+			local instanceName = instance.Name
 
-				local currentGunStats = GunsStats[playersCurrentGun[playerWhoFired]]
-				local damage
+			local currentGunStats = GunsStats[playersCurrentGun[playerWhoFired]]
+			local damage
 
-				if string.find(instanceName, "Leg") then
-					damage = currentGunStats["LegDamage"]
-				elseif instanceName == "Head" then
-					damage = currentGunStats["HeadDamage"]
-				else
-					damage = currentGunStats["BodyDamage"]
-				end
-
-				humanoid:TakeDamage(damage)
-
-				for _, player in ipairs(Players:GetPlayers()) do
-					if character == player.Character then
-						healthChangedEvent:FireClient(player, math.round(humanoid.Health))
-						break
-					end
-				end
+			if string.find(instanceName, "Leg") then
+				damage = currentGunStats["LegDamage"]
+			elseif instanceName == "Head" then
+				damage = currentGunStats["HeadDamage"]
 			else
-				createBulletHole(playerWhoFired, raycastResult)
+				damage = currentGunStats["BodyDamage"]
 			end
+
+			humanoid:TakeDamage(damage)
+
+			for _, player in ipairs(Players:GetPlayers()) do
+				if character == player.Character then
+					healthChangedEvent:FireClient(player, math.round(humanoid.Health))
+					break
+				end
+			end
+		else
+			createBulletHole(playerWhoFired, raycastResult)
 		end
+	end
 end
 
 Players.PlayerAdded:Connect(function(player: Player)
 	playersCurrentGun[player] = "Vandal"
-	remotesFolder.ChangeGun:FireClient(player, "Vandal")
 
 	player.CharacterAdded:Connect(function()
 		healthChangedEvent:FireClient(player, 100)
@@ -86,6 +85,10 @@ Players.PlayerRemoving:Connect(function(player: Player)
 	playersCurrentGun[player] = nil
 end)
 
+remotesFolder.RequestWeaponChange.OnServerInvoke = function(player)
+	return playersCurrentGun[player]
+end
+
 remotesFolder.BulletHitSurface.OnServerEvent:Connect(
 	function(playerWhoFired: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
 		local raycastResult = raycastBullet(playerWhoFired, mouseUnitRayDirection, spread)
@@ -95,7 +98,7 @@ remotesFolder.BulletHitSurface.OnServerEvent:Connect(
 			local position = raycastResult.Position
 			local instancePenetration = instance:GetAttribute("Penetration")
 
-			createBulletHole(playerWhoFired, raycastResult, false)
+			createBulletHole(playerWhoFired, raycastResult)
 
 			if not instance:GetAttribute("Penetration") then
 				return
@@ -105,7 +108,12 @@ remotesFolder.BulletHitSurface.OnServerEvent:Connect(
 				return
 			end
 
-			local wallbangRaycastResult = _G.RaycastBullet(playerWhoFired.Character, position + mouseUnitRayDirection * 10, -mouseUnitRayDirection, Vector3.new(0, 0, 0))
+			local wallbangRaycastResult = _G.RaycastBullet(
+				playerWhoFired.Character,
+				position + mouseUnitRayDirection * 10,
+				-mouseUnitRayDirection,
+				Vector3.new(0, 0, 0)
+			)
 			--wall bang
 		end
 	end

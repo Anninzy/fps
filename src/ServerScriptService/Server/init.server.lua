@@ -1,1 +1,1 @@
-require(game:GetService("ReplicatedFirst").Loader)()
+require(game:GetService("ReplicatedFirst").LoadService)

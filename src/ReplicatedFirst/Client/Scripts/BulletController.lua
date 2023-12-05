@@ -11,11 +11,6 @@ local GuiController
 local GunsStats
 local RaycastBullet
 local RecoilController
-module.CurrentGun = ""
-
-remotesFolder.ChangeGun.OnClientEvent:Connect(function(gunName: string)
-	module.CurrentGun = gunName
-end)
 
 function module.Initiate()
 	GuiController = _G.GuiController
@@ -57,7 +52,7 @@ end
 
 local function handleFiringGun(_actionName, userInputState, _inputObject)
 	if userInputState == Enum.UserInputState.Begin then
-		local currentGunStats = GunsStats[module.CurrentGun]
+		local currentGunStats = GunsStats[_G.WeaponController.CurrentGun]
 
 		if currentGunStats["CanSpray"] then
 			firstShot = true
