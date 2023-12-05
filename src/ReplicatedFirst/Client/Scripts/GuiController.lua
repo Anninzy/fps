@@ -134,7 +134,7 @@ function module.Initiate()
 	local root = createRoot(Instance.new("Folder"))
 	root:render(createPortal(createElement(HUD), playerGui, "HUD"))
 
-	function module.CreateBulletHole(instance, position)
+	function module.CreateBulletHole(instance: Instance, position: Vector3)
 		local DECAL_SIZE = 1
 		local SCALE = 128
 		local SurfaceFace, Width, Height, RelativeX, RelativeY =
@@ -172,7 +172,7 @@ function module.Initiate()
 		end)()
 	end
 
-	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(instance, position)
+	remotesFolder.CreateBulletHole.OnClientEvent:Connect(function(instance: Instance, position: Vector3)
 		module.CreateBulletHole(instance, position)
 	end)
 end
