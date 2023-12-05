@@ -1,10 +1,7 @@
 local raycastParams = RaycastParams.new()
 raycastParams.FilterType = Enum.RaycastFilterType.Exclude
 
-return function(player, direction, spread)
-	local character = player.Character
-
+return function(character: Model, origin: Vector3, direction: Vector3, spread: Vector3)
 	raycastParams.FilterDescendantsInstances = { character }
-
-	return workspace:Raycast(character.Head.Position, direction * 1000 + spread, raycastParams)
+	return workspace:Raycast(origin, direction * 1000 + spread, raycastParams)
 end
