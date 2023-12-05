@@ -6,6 +6,7 @@
 - [ ] GunManager: Implement shield
 - [ ] RecoilController: Implement recoil for guns without spray
 - [ ] GunManager: Utilise parallel Lua
+- [ ] Set repo to public after getting the project to a playable state
 
 # BUILD
 
