@@ -2,6 +2,10 @@
 
 - [ ] Gotta do some more clean up on codes, organise them into folders as well
     - [ ] Prevent duplicate function / variable / module name, e.g. RaycastBullet
+    - [ ] Rename things accordingly, might not be accurate to the definition of the terms, but makes a good enough distinction
+        - Client: Controller
+        - Server: Manager
+        - Shared: Service
 - [ ] Wallbang
 - [ ] Gun muzzle
 - [ ] Bullet tracer
