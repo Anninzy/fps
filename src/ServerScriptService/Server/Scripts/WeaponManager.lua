@@ -85,7 +85,7 @@ Players.PlayerRemoving:Connect(function(player: Player)
 	playersCurrentGun[player] = nil
 end)
 
-remotesFolder.RequestWeaponChange.OnServerInvoke = function(player)
+remotesFolder.RequestWeaponChange.OnServerInvoke = function(player: Player)
 	return playersCurrentGun[player]
 end
 

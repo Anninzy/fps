@@ -50,11 +50,11 @@ function module.Initiate()
 		local health, setHealth = useState(100)
 		local shield, setShield = useState(0)
 
-		remotesFolder.HealthChanged.OnClientEvent:Connect(function(newHealth)
+		remotesFolder.HealthChanged.OnClientEvent:Connect(function(newHealth: number)
 			setHealth(newHealth)
 		end)
 
-		remotesFolder.ShieldChanged.OnClientEvent:Connect(function(newShield)
+		remotesFolder.ShieldChanged.OnClientEvent:Connect(function(newShield: number)
 			setShield(newShield)
 		end)
 
