@@ -7,16 +7,18 @@ local localPlayer = Players.LocalPlayer
 local remotesFolder = ReplicatedStorage.Remotes
 local firstShot = true
 local isFiring = false
+local BulletService
 local GuiController
-local GunsStats
-local RaycastBullet
 local RecoilController
+local WeaponController
+local WeaponStatsService
 
 function module.Initiate()
+	BulletService = _G.RaycastBullet
 	GuiController = _G.GuiController
-	GunsStats = _G.GunsStats
-	RaycastBullet = _G.RaycastBullet
 	RecoilController = _G.RecoilController
+	WeaponController = _G.WeaponController
+	WeaponStatsService = _G.GunsStats
 end
 
 local function raycastBullet()
@@ -24,10 +26,9 @@ local function raycastBullet()
 	local mouseLocation = UserInputService:GetMouseLocation()
 	local mouseUnitRayDirection = workspace.CurrentCamera:ViewportPointToRay(mouseLocation.X, mouseLocation.Y).Direction
 	local spread = Vector3.new(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100))
-	local velocity = character.HumanoidRootPart.AssemblyLinearVelocity
-	velocity = Vector3.new(math.round(velocity.X), math.round(velocity.Y), math.round(velocity.Z))
+	local magnitude = character.HumanoidRootPart.AssemblyLinearVelocity.Magnitude
 
-	if velocity == Vector3.new(0, 0, 0) then
+	if magnitude < 2 then
 		if firstShot then
 			firstShot = false
 			spread = Vector3.new(0, 0, 0)
@@ -36,32 +37,32 @@ local function raycastBullet()
 		end
 	end
 
-	local raycastResult = RaycastBullet(character, character.Head.Position, mouseUnitRayDirection, spread)
+	local raycastResult = BulletService(character, character.Head.Position, mouseUnitRayDirection, spread)
 
 	if raycastResult then
 		local instance = raycastResult.Instance
 
 		if instance.Parent:FindFirstChildWhichIsA("Humanoid") then
-			remotesFolder.BulletHitCharacter:FireServer(mouseUnitRayDirection, spread)
+			remotesFolder.HitCharacter:FireServer(mouseUnitRayDirection, spread)
 		else
 			GuiController.CreateBulletHole(instance, raycastResult.Position)
-			remotesFolder.BulletHitSurface:FireServer(mouseUnitRayDirection, spread)
+			remotesFolder.HitSurface:FireServer(mouseUnitRayDirection, spread)
 		end
 	end
 end
 
-local function handleFiringGun(_actionName, userInputState, _inputObject)
+local function handleFiringBullet(_actionName, userInputState, _inputObject)
 	if userInputState == Enum.UserInputState.Begin then
-		local currentGunStats = GunsStats[_G.WeaponController.CurrentGun]
+		local weaponStats = WeaponStatsService[WeaponController.CurrentWeapon]
 
-		if currentGunStats["CanSpray"] then
+		if weaponStats["CanSpray"] then
 			firstShot = true
 			isFiring = true
 			RecoilController.StartRecoil()
 
 			repeat
 				raycastBullet()
-				task.wait(currentGunStats["SecondsPerRound"])
+				task.wait(weaponStats["SecondsPerRound"])
 			until not isFiring
 
 			RecoilController.EndRecoil()
@@ -74,6 +75,6 @@ local function handleFiringGun(_actionName, userInputState, _inputObject)
 	end
 end
 
-ContextActionService:BindAction("FiringGun", handleFiringGun, false, Enum.UserInputType.MouseButton1)
+ContextActionService:BindAction("FiringBullet", handleFiringBullet(), false, Enum.UserInputType.MouseButton1)
 
 return module
