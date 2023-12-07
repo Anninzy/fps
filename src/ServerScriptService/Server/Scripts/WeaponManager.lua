@@ -14,19 +14,6 @@ function module.Initiate()
 	WeaponStatsService = _G.WeaponStatsService
 end
 
-local function raycastBullet(player: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
-	if weaponFiredTime[player] then
-		if os.clock() - weaponFiredTime[player] < WeaponStatsService[equippedWeapon[player]]["SecondsPerRound"] then
-			return
-		end
-	end
-
-	local character = player.Character
-	weaponFiredTime[player] = os.clock()
-
-	return BulletService(character, character.Head.Position, mouseUnitRayDirection, spread)
-end
-
 local function createBulletHole(playerWhoFired: any, raycastResult: RaycastResult)
 	for _, player in ipairs(Players:GetPlayers()) do
 		if player == playerWhoFired then
@@ -38,7 +25,15 @@ local function createBulletHole(playerWhoFired: any, raycastResult: RaycastResul
 end
 
 local function raycastDamage(playerWhoFired: Player, origin:Vector3, direction: Vector3, spread: Vector3)
-	local raycastResult = raycastBullet(playerWhoFired.Character, origin, direction, spread)
+	if weaponFiredTime[playerWhoFired] then
+		if os.clock() - weaponFiredTime[playerWhoFired] < WeaponStatsService[equippedWeapon[playerWhoFired]]["SecondsPerRound"] then
+			return
+		end
+	end
+
+	weaponFiredTime[playerWhoFired] = os.clock()
+
+	local raycastResult = BulletService(playerWhoFired.Character, origin, direction, spread)
 
 	if raycastResult then
 		local instance = raycastResult.Instance
@@ -90,7 +85,7 @@ end
 
 remotesFolder.BulletHitSurface.OnServerEvent:Connect(
 	function(playerWhoFired: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
-		local raycastResult = raycastBullet(playerWhoFired, mouseUnitRayDirection, spread)
+		local raycastResult = raycastDamage(playerWhoFired, mouseUnitRayDirection, spread)
 
 		if raycastResult then
 			local instance = raycastResult.Instance
@@ -107,7 +102,7 @@ remotesFolder.BulletHitSurface.OnServerEvent:Connect(
 				return
 			end
 			
-			raycastDamage(playerWhoFired, position + mouseUnitRayDirection * 10, -mouseUnitRayDirection, Vector3.new(0, 0, 0))
+			BulletService(playerWhoFired.Character, position + mouseUnitRayDirection * 10, -mouseUnitRayDirection, Vector3.new(0, 0, 0))
 		end
 	end
 )
