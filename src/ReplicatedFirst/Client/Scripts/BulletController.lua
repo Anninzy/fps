@@ -37,7 +37,7 @@ local function raycastBullet()
 		end
 	end
 
-	local raycastResult = BulletService(character, character.Head.Position, mouseUnitRayDirection, spread)
+	local raycastResult = BulletService({ character }, character.Head.Position, mouseUnitRayDirection, spread)
 
 	if raycastResult then
 		local instance = raycastResult.Instance
