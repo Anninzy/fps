@@ -14,11 +14,11 @@ local WeaponController
 local WeaponStatsService
 
 function module.Initiate()
-	BulletService = _G.RaycastBullet
+	BulletService = _G.BulletService
 	GuiController = _G.GuiController
 	RecoilController = _G.RecoilController
 	WeaponController = _G.WeaponController
-	WeaponStatsService = _G.GunsStats
+	WeaponStatsService = _G.WeaponStatsService
 end
 
 local function raycastBullet()
@@ -75,6 +75,6 @@ local function handleFiringBullet(_actionName, userInputState, _inputObject)
 	end
 end
 
-ContextActionService:BindAction("FiringBullet", handleFiringBullet(), false, Enum.UserInputType.MouseButton1)
+ContextActionService:BindAction("FiringBullet", handleFiringBullet, false, Enum.UserInputType.MouseButton1)
 
 return module

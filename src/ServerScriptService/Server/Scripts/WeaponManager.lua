@@ -24,9 +24,12 @@ local function createBulletHole(playerWhoFired: any, raycastResult: RaycastResul
 	end
 end
 
-local function raycastDamage(playerWhoFired: Player, origin:Vector3, direction: Vector3, spread: Vector3)
+local function raycastDamage(playerWhoFired: Player, origin: Vector3, direction: Vector3, spread: Vector3)
 	if weaponFiredTime[playerWhoFired] then
-		if os.clock() - weaponFiredTime[playerWhoFired] < WeaponStatsService[equippedWeapon[playerWhoFired]]["SecondsPerRound"] then
+		if
+			os.clock() - weaponFiredTime[playerWhoFired]
+			< WeaponStatsService[equippedWeapon[playerWhoFired]]["SecondsPerRound"]
+		then
 			return
 		end
 	end
@@ -54,7 +57,7 @@ local function raycastDamage(playerWhoFired: Player, origin:Vector3, direction: 
 			end
 
 			humanoid:TakeDamage(damage)
-			
+
 			local player = Players:GetPlayerFromCharacter(character)
 
 			if player then
@@ -83,9 +86,11 @@ remotesFolder.RequestWeaponChange.OnServerInvoke = function(player: Player)
 	return equippedWeapon[player]
 end
 
-remotesFolder.BulletHitSurface.OnServerEvent:Connect(
+remotesFolder.HitSurface.OnServerEvent:Connect(
 	function(playerWhoFired: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
-		local raycastResult = raycastDamage(playerWhoFired, mouseUnitRayDirection, spread)
+		local playerWhoFiredCharacter = playerWhoFired.Character
+		local raycastResult =
+			raycastDamage(playerWhoFired, playerWhoFiredCharacter.Head.Position, mouseUnitRayDirection, spread)
 
 		if raycastResult then
 			local instance = raycastResult.Instance
@@ -101,13 +106,18 @@ remotesFolder.BulletHitSurface.OnServerEvent:Connect(
 			if equippedWeapon[playerWhoFired]["Penetration"] < instancePenetration then
 				return
 			end
-			
-			BulletService(playerWhoFired.Character, position + mouseUnitRayDirection * 10, -mouseUnitRayDirection, Vector3.new(0, 0, 0))
+
+			BulletService(
+				playerWhoFiredCharacter,
+				position + mouseUnitRayDirection * 10,
+				-mouseUnitRayDirection,
+				Vector3.new(0, 0, 0)
+			)
 		end
 	end
 )
 
-remotesFolder.BulletHitCharacter.OnServerEvent:Connect(
+remotesFolder.HitCharacter.OnServerEvent:Connect(
 	function(playerWhoFired: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
 		raycastDamage(playerWhoFired, playerWhoFired.Character.Head.Position, mouseUnitRayDirection, spread)
 	end
