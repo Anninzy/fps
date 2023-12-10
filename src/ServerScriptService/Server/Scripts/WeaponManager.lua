@@ -21,7 +21,7 @@ function module.Initiate()
 	local WeaponStatsService = _G.WeaponStatsService
 	local weaponFiredTime = {}
 
-	local function dealDamage(playerWhoFired: Player, raycastResult: RaycastResult)
+	local function dealDamage(playerWhoFired: Player, raycastResult: RaycastResult, wallbang: boolean)
 		if raycastResult then
 			local instance = raycastResult.Instance
 			local character = instance.Parent
@@ -38,6 +38,10 @@ function module.Initiate()
 					damage = weaponStats["HeadDamage"]
 				else
 					damage = weaponStats["BodyDamage"]
+				end
+
+				if wallbang then
+					damage /= 3
 				end
 
 				humanoid:TakeDamage(damage)
@@ -102,7 +106,7 @@ function module.Initiate()
 						Vector3.new(0, 0, 0)
 					)
 
-					dealDamage(playerWhoFired, wallbangRaycastResult)
+					dealDamage(playerWhoFired, wallbangRaycastResult, true)
 				end
 			end
 		end
@@ -125,7 +129,8 @@ function module.Initiate()
 
 			dealDamage(
 				playerWhoFired,
-				BulletService({ characterWhoFired }, characterWhoFired.Head.Position, mouseUnitRayDirection, spread)
+				BulletService({ characterWhoFired }, characterWhoFired.Head.Position, mouseUnitRayDirection, spread),
+				false
 			)
 		end
 	)
