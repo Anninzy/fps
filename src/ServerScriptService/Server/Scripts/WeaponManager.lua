@@ -21,20 +21,33 @@ function module.Initiate()
 	local WeaponStatsService = _G.WeaponStatsService
 	local weaponFiredTime = {}
 
+	local function checkLastFiredTime(playerWhoFired: Player)
+		if weaponFiredTime[playerWhoFired] then
+			if
+				os.clock() - weaponFiredTime[playerWhoFired]
+				< WeaponStatsService[equippedWeapon[playerWhoFired]]["SecondsPerRound"]
+			then
+				return
+			end
+
+			weaponFiredTime[playerWhoFired] = os.clock()
+		end
+	end
+
 	local function dealDamage(playerWhoFired: Player, raycastResult: RaycastResult, wallbang: boolean)
 		if raycastResult then
-			local instance = raycastResult.Instance
-			local character = instance.Parent
+			local bodyPart = raycastResult.Instance
+			local character = bodyPart.Parent
 			local humanoid = character:FindFirstChildWhichIsA("Humanoid")
 
 			if humanoid then
-				local instanceName = instance.Name
+				local bodyPartName = bodyPart.Name
 				local weaponStats = WeaponStatsService[equippedWeapon[playerWhoFired]]
 				local damage
 
-				if string.find(instanceName, "Leg") then
+				if string.find(bodyPartName, "Leg") then
 					damage = weaponStats["LegDamage"]
-				elseif instanceName == "Head" then
+				elseif bodyPartName == "Head" then
 					damage = weaponStats["HeadDamage"]
 				else
 					damage = weaponStats["BodyDamage"]
@@ -44,7 +57,7 @@ function module.Initiate()
 					damage /= 3
 				end
 
-				humanoid:TakeDamage(damage)
+				humanoid:TakeDamage(damage) --TEMPORARY
 
 				local player = Players:GetPlayerFromCharacter(character)
 
@@ -52,91 +65,81 @@ function module.Initiate()
 					healthChangedEvent:FireClient(player, math.round(humanoid.Health))
 				end
 			else
-				createBulletHoleForOthers(playerWhoFired, raycastResult)
+				remotesFolder.CreateBulletHole:FireAllClients(raycastResult.Instance, raycastResult.Position)
 			end
 		end
 	end
 
-	remotesFolder.HitSurface.OnServerEvent:Connect(
-		function(playerWhoFired: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
-			local characterWhoFired = playerWhoFired.Character
-			local raycastResult =
-				BulletService({ characterWhoFired }, characterWhoFired.Head.Position, mouseUnitRayDirection, spread)
+	remotesFolder.HitSurface.OnServerEvent:Connect(function(playerWhoFired: Player, direction: Vector3, spread: Vector3)
+		checkLastFiredTime(playerWhoFired)
 
-			if raycastResult then
-				local instancePenetration = raycastResult.Instance:GetAttribute("Penetration")
+		local characterWhoFired = playerWhoFired.Character
+		local raycastResult = BulletService({ characterWhoFired }, characterWhoFired.Head.Position, direction, spread)
 
-				createBulletHoleForOthers(playerWhoFired, raycastResult)
+		if raycastResult then
+			createBulletHoleForOthers(playerWhoFired, raycastResult)
 
-				if not instancePenetration then
-					return
-				end
+			local instancePenetration = raycastResult.Instance:GetAttribute("Penetration")
 
-				if WeaponStatsService[equippedWeapon[playerWhoFired]]["Penetration"] < instancePenetration then
-					return
-				end
+			if not instancePenetration then
+				return
+			end
 
-				local allCharacters = {}
+			if WeaponStatsService[equippedWeapon[playerWhoFired]]["Penetration"] < instancePenetration then
+				return
+			end
 
-				for _, player in ipairs(Players:GetPlayers()) do
-					table.insert(allCharacters, player.Character)
-				end
+			local allCharacters = {}
 
-				for _, dummy in ipairs(workspace.Dummies:GetChildren()) do
-					table.insert(allCharacters, dummy)
-				end
+			for _, player in ipairs(Players:GetPlayers()) do
+				table.insert(allCharacters, player.Character)
+			end
 
-				local ignorePlayersRaycastResult = BulletService(
-					{ allCharacters },
-					raycastResult.Position + mouseUnitRayDirection * 10,
-					-mouseUnitRayDirection,
+			for _, dummy in ipairs(workspace.Dummies:GetChildren()) do
+				table.insert(allCharacters, dummy)
+			end
+
+			local ignoreCharactersRaycastResult = BulletService(
+				{ allCharacters },
+				raycastResult.Position + direction * 10,
+				-direction,
+				Vector3.new(0, 0, 0)
+			)
+
+			if ignoreCharactersRaycastResult then
+				remotesFolder.CreateBulletHole:FireAllClients(
+					ignoreCharactersRaycastResult.Instance,
+					ignoreCharactersRaycastResult.Position
+				)
+
+				local wallbangRaycastResult = BulletService(
+					{ characterWhoFired },
+					ignoreCharactersRaycastResult.Position,
+					direction,
 					Vector3.new(0, 0, 0)
 				)
 
-				if ignorePlayersRaycastResult then
-					remotesFolder.CreateBulletHole:FireAllClients(
-						ignorePlayersRaycastResult.Instance,
-						ignorePlayersRaycastResult.Position
-					)
-
-					local wallbangRaycastResult = BulletService(
-						{ characterWhoFired },
-						ignorePlayersRaycastResult.Position,
-						mouseUnitRayDirection,
-						Vector3.new(0, 0, 0)
-					)
-
-					dealDamage(playerWhoFired, wallbangRaycastResult, true)
-				end
+				dealDamage(playerWhoFired, wallbangRaycastResult, true)
 			end
 		end
-	)
+	end)
 
 	remotesFolder.HitCharacter.OnServerEvent:Connect(
-		function(playerWhoFired: Player, mouseUnitRayDirection: Vector3, spread: Vector3)
-			if weaponFiredTime[playerWhoFired] then
-				if
-					os.clock() - weaponFiredTime[playerWhoFired]
-					< WeaponStatsService[equippedWeapon[playerWhoFired]]["SecondsPerRound"]
-				then
-					return
-				end
-
-				weaponFiredTime[playerWhoFired] = os.clock()
-			end
+		function(playerWhoFired: Player, direction: Vector3, spread: Vector3)
+			checkLastFiredTime(playerWhoFired)
 
 			local characterWhoFired = playerWhoFired.Character
 
 			dealDamage(
 				playerWhoFired,
-				BulletService({ characterWhoFired }, characterWhoFired.Head.Position, mouseUnitRayDirection, spread),
+				BulletService({ characterWhoFired }, characterWhoFired.Head.Position, direction, spread),
 				false
 			)
 		end
 	)
 end
 
-Players.PlayerAdded:Connect(function(playerWhoFired)
+Players.PlayerAdded:Connect(function(playerWhoFired) --TEMPORARY
 	equippedWeapon[playerWhoFired] = "Vandal"
 
 	playerWhoFired.CharacterAdded:Connect(function()
