@@ -78,6 +78,10 @@ function module.Initiate()
 					table.insert(allCharacters, player.Character)
 				end
 
+				for _, dummy in ipairs(workspace.Dummies:GetChildren()) do
+					table.insert(allCharacters, dummy)
+				end
+
 				local ignorePlayersRaycastResult = BulletService(
 					{ allCharacters },
 					raycastResult.Position + mouseUnitRayDirection * 10,
@@ -94,17 +98,9 @@ function module.Initiate()
 					local wallbangRaycastResult = BulletService(
 						{ characterWhoFired },
 						ignorePlayersRaycastResult.Position,
-						-mouseUnitRayDirection,
+						mouseUnitRayDirection,
 						Vector3.new(0, 0, 0)
 					)
-
-					local TEST_PART = Instance.new("Part")
-					TEST_PART.Position = wallbangRaycastResult.Position
-					TEST_PART.Size = Vector3.new(1, 1, 1)
-					TEST_PART.Anchored = true
-					TEST_PART.CanCollide = false
-					TEST_PART.Color = Color3.fromRGB(255, 0, 0)
-					TEST_PART.Parent = workspace
 
 					dealDamage(playerWhoFired, wallbangRaycastResult)
 				end
