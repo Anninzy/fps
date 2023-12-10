@@ -1,6 +1,7 @@
 # TODO
 
 - [ ] RecoilController: Implement recoil for guns without spray
+- [ ] ViewModelController: Make it not completely stiff
 - [ ] WeaponManager: Wallbang through player
 - [ ] WeaponManager: Gun muzzle
 - [ ] WeaponManager: Bullet tracer

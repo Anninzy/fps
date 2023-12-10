@@ -2,7 +2,6 @@ local RunService = game:GetService("RunService")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local sharedModulesFolder = ReplicatedStorage.Modules
 local allModuleScripts = {}
 
 local function addModules(array: { [number]: string })
@@ -41,6 +40,8 @@ else
 	addModules(ServerScriptService.Server:GetDescendants())
 	addModules(ServerScriptService.ServerPackages:GetChildren())
 end
+
+local sharedModulesFolder = ReplicatedStorage.Modules
 
 addModules(sharedModulesFolder:GetChildren())
 addModules(sharedModulesFolder.Packages:GetChildren())
