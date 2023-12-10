@@ -98,13 +98,13 @@ function module.Initiate()
 						Vector3.new(0, 0, 0)
 					)
 
-					local TESTPART = Instance.new("Part")
-					TESTPART.Position = wallbangRaycastResult.Position
-					TESTPART.Size = Vector3.new(1, 1, 1)
-					TESTPART.Anchored = true
-					TESTPART.CanCollide = false
-					TESTPART.Color = Color3.fromRGB(255, 0, 0)
-					TESTPART.Parent = workspace
+					local TEST_PART = Instance.new("Part")
+					TEST_PART.Position = wallbangRaycastResult.Position
+					TEST_PART.Size = Vector3.new(1, 1, 1)
+					TEST_PART.Anchored = true
+					TEST_PART.CanCollide = false
+					TEST_PART.Color = Color3.fromRGB(255, 0, 0)
+					TEST_PART.Parent = workspace
 
 					dealDamage(playerWhoFired, wallbangRaycastResult)
 				end
