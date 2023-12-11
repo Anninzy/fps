@@ -20,8 +20,6 @@ function module.Initiate()
 
 		preRender = RunService.PreRender:Connect(function()
 			if framesRan % 3 == 0 then
-				noOffsetCameraCFrame = camera.CFrame * offset:Inverse()
-
 				if os.clock() - sprayStageStartTime >= 2 then
 					if sprayPatternIndex + 1 > #sprayPattern then
 						sprayPatternIndex = 1
@@ -39,6 +37,8 @@ function module.Initiate()
 					crosshairPosition = sprayPattern[sprayPatternIndex]
 					noOffsetCameraCFrame = camera.CFrame
 					sprayStageStartTime = os.clock()
+				else
+					noOffsetCameraCFrame = camera.CFrame * offset:Inverse()
 				end
 
 				alpha = math.clamp(alpha + increment, 0, 1)
@@ -54,7 +54,7 @@ function module.Initiate()
 		end)
 	end
 
-	function module.SingleRecoil() --TEMPORARY
+	function module.SingleRecoil()
 		local alpha = 0
 		local increment = 0.25
 		local offset = CFrame.Angles(0, 0, 0)
