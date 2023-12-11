@@ -1,15 +1,15 @@
 local module = {}
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 local UserInputService = game:GetService("UserInputService")
-local remotesFolder = ReplicatedStorage.Remotes
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
 UserInputService.MouseIconEnabled = false
 
 function module.Initiate()
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local remotesFolder = ReplicatedStorage.Remotes
 	local React = _G.React
 	local ReactRoblox = _G.ReactRoblox
 	local createElement = React.createElement

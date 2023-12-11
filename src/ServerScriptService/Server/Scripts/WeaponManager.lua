@@ -90,12 +90,17 @@ function module.Initiate()
 			end
 
 			local allCharacters = {}
+			local dummiesFolder = workspace.Dummies
 
 			for _, player in ipairs(Players:GetPlayers()) do
 				table.insert(allCharacters, player.Character)
 			end
 
-			for _, dummy in ipairs(workspace.Dummies:GetChildren()) do
+			for _, dummy in ipairs(dummiesFolder.NoHighlight:GetChildren()) do
+				table.insert(allCharacters, dummy)
+			end
+
+			for _, dummy in ipairs(dummiesFolder.Highlight:GetChildren()) do
 				table.insert(allCharacters, dummy)
 			end
 
@@ -139,7 +144,7 @@ function module.Initiate()
 	)
 end
 
-Players.PlayerAdded:Connect(function(playerWhoFired) --TEMPORARY
+Players.PlayerAdded:Connect(function(playerWhoFired: Player) --TEMPORARY
 	equippedWeapon[playerWhoFired] = "Vandal"
 
 	playerWhoFired.CharacterAdded:Connect(function()
@@ -148,11 +153,11 @@ Players.PlayerAdded:Connect(function(playerWhoFired) --TEMPORARY
 	end)
 end)
 
-Players.PlayerRemoving:Connect(function(playerWhoFired)
+Players.PlayerRemoving:Connect(function(playerWhoFired: Player)
 	equippedWeapon[playerWhoFired] = nil
 end)
 
-remotesFolder.RequestWeaponChange.OnServerInvoke = function(playerWhoFired)
+remotesFolder.RequestWeaponChange.OnServerInvoke = function(playerWhoFired: Player)
 	return equippedWeapon[playerWhoFired]
 end
 
