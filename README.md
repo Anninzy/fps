@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Development halted. I may or may not come back to this. At the time of writing, I've started working on another project.
+
 # TODO
 
 - [ ] RecoilController: Implement recoil for guns without spray
